@@ -1,0 +1,218 @@
+---
+title: "Many Babies 1"
+subtitle: "Infant-Directed Speech Preference"
+description: |
+  In the first ManyBabies project, we replicated a robust finding from developmental literature: infants’ preference for infant-directed speech (IDS) over adult-directed speech (ADS). IDS is characterized by a higher pitch, greater pitch excursions, and shorter utterances when compared to ADS. Exposure to IDS has been shown to improve word segmentation and word learning. We asked if infants have a preference for IDS, and how this preference varies across age, native language background, and method.
+  Sixty-nine labs from 16 countries participated and collected data from 2,329 infants (range: 3-15 months old). We focused on three primary methods for assessing infants’ interest: single-screen central fixation, eye tracking, and the head-turn preference procedure (HPP).
+title-block-banner: "#9687A3"
+title-block-banner-color: white
+---
+
+```{r}
+library(readr)
+library(stringr)
+library(dplyr)
+library(ggplot2)
+library(ggthemes)
+library(plotly)
+theme_set(theme_minimal())
+
+# project <- redivis::user("mikabr")$project("mb1")
+# forest_data <- project$table("mb1-paper_output")$to_tibble()
+forest_data <- read_csv("data/forest_data.csv")
+forest_data <- forest_data |>
+  mutate(Method = if_else(is.na(method), "", method),
+         meta = str_detect(lab, "Meta-analytic"),
+         inverse_vars = if_else(meta, max(inverse_vars, na.rm = TRUE),
+                                inverse_vars)) |>
+         # lab_method = paste(lab, "|", method)) |>
+  arrange(Method, desc(meta), effects) |>
+  mutate(order = 1:n()) |>
+  rename_with(\(s) str_replace_all(s, "\\.", "_"), .cols = everything())
+
+ojs_define(forest_data = forest_data)
+```
+
+```{r}
+#| eval: FALSE
+
+# plot
+ggplot(forest_data, aes(x = lab, y = effects)) + 
+  geom_hline(yintercept = 0, linetype = "dashed", color = "grey") +
+  geom_linerange(aes(ymin = effects - sqrt(variances)*1.96,
+                     ymax = effects + sqrt(variances)*1.96, 
+                     group = index),
+                 alpha = .5,
+                 position = position_dodge(width = .5)) +
+  geom_point(data = filter(forest_data, lab != "Meta-analytic estimate"),
+             aes(y = effects, size = inverse_vars, col = Method, 
+                 group = index), 
+             alpha = .5, 
+             position = position_dodge(width = .5)) +
+  geom_point(data = filter(forest_data, lab == "Meta-analytic estimate"),
+             pch = 5) +
+  geom_linerange(data = filter(forest_data, lab == "Meta-analytic estimate"),
+                 aes(ymin = effects.cil, ymax = effects.cih), 
+                 alpha = .5) +
+  facet_grid(Method ~ ., scales = "free", space = "free") +
+  coord_flip() +
+  scale_size_continuous(guide = FALSE) +
+  scale_colour_ptol(guide = FALSE) +
+  xlab("Lab") +
+  ylab("Effect Size") +
+  theme(axis.text.y = element_text(size = 6))
+
+# ggplotly(forest)
+```
+
+
+::: {.panel-tabset}
+
+## Plot
+
+```{ojs}
+Plot = import("https://esm.sh/@observablehq/plot")
+
+d = transpose(forest_data)
+
+maxX = d3.max(forest_data.effects_cih)
+pad = 0.1
+
+methodIndeces = d3.rollup(
+  d,
+  (values) => ({Method: values[0].Method, order: d3.min(values, (d) => d.order)}),
+  (d) => d.Method
+)
+
+method_vals = Array.from(methodIndeces.keys()).filter(x => x)
+```
+
+```{ojs}
+//| panel: input
+viewof methods = Inputs.checkbox(method_vals, {value: method_vals})
+```
+
+```{ojs}
+methodLabels = Array.from(methodIndeces.values()).filter(x => methods.includes(x.Method))
+
+fd = d.filter(d => !d.Method | methods.includes(d.Method))
+```
+
+```{ojs}
+Plot.plot({
+  style: {fontFamily: "Source Sans Pro"},
+  marginLeft: 130,
+  width: 800,
+  x: {
+    //nice: true,
+    label: "Effect size",
+    line: true,
+    labelAnchor: "center",
+    domain: [d3.min(forest_data.effects_cil) - pad, d3.max(forest_data.effects_cih) + pad],
+  },
+  y: {
+    grid: true,
+    line: true,
+    label: "Lab",
+    //labelAnchor: "top",
+    padding: 1,
+    type: "point",
+    tickFormat: (value) => {
+      const correspondingData = fd.find((d) => d.order === value);
+      return correspondingData ? correspondingData.lab : "";
+    },
+  },
+//  color: {
+//    range: ["lime", "maroon", "blue"]
+//  },
+  marks: [
+    // Plot.frame(),
+    Plot.ruleX([0], {stroke: "lightgrey", strokeDasharray: [3, 3]}),
+    Plot.ruleY(fd.filter(d => d.meta), {
+      y: "order",
+      stroke: "lightgrey"
+    }),
+    Plot.ruleX(fd, Plot.pointerY({x: "effects", py: "order", stroke: "Method"})),
+    Plot.ruleY(fd, Plot.pointerY({px: "effects", y: "order", stroke: "lightgrey"})),
+    Plot.link(fd, {
+      y: "order",
+      x1: "effects_cil",
+      x2: "effects_cih"
+    }),
+    Plot.dot(fd, {
+      x: "effects",
+      y: "order",
+      fill: "Method",
+      symbol: (d) => (d.meta ? "diamond" : "circle"),
+      r: "inverse_vars",
+    }),
+    Plot.text(methodLabels, {
+      x: maxX + 0.1,
+      y: "order",
+      text: "Method",
+      fill: "Method",
+      stroke: "white", // Border color
+      strokeWidth: 12,
+      fontWeight: "bold",
+      dy: 6,
+      fontSize: 18,
+      textAnchor: "end"
+    }),
+    Plot.tip(fd, Plot.pointerY({
+      x: "effects",
+      y: "order",
+      stroke: "Method",
+      channels: {
+        Lab: "lab",
+        "Effect size": (d) => d.effects.toFixed(2),
+        CI: (d) => `[${d.effects_cil.toFixed(2)}, ${d.effects_cih.toFixed(2)}]`,
+        //Method: "method"
+      },
+    })),
+  ]
+})
+```
+
+## Data
+
+```{r}
+forest_data |>
+  filter(!meta) |>
+  mutate(across(where(is.numeric), \(x) round(x, 2))) |>
+  select(method, lab, effect = effects, cil = effects_cil, cih = effects_cih,
+         inverse_var = inverse_vars) |>
+  arrange(method, lab) |>
+  DT::datatable(class = "compact", style = "bootstrap4", rownames = FALSE,
+                options = list(pageLength = 20))
+```
+
+## Download
+
+The data is hosted as a [dataset on Redivis](https://redivis.com/datasets/9esa-7gafrp2y5), where you can view and download it. You can also access it programmatically using the Redivis API in R or Python. For example:
+
+::: {.panel-tabset}
+
+## R
+
+```{r}
+#| eval: false
+#| echo: true
+
+dataset <- redivis::organization("stanford_templates")$dataset("many_babies_1")
+df <- dataset$table("03_data_trial_main")$to_tibble()
+```
+
+## Python
+
+```{python}
+#| eval: false
+#| echo: true
+#| python.reticulate: false
+
+dataset = redivis.organization('stanford_templates').dataset('many_babies_1')
+df = dataset.table('03_data_trial_main').to_pandas_dataframe()
+```
+
+:::
+
+:::

@@ -1,0 +1,21 @@
+project:
+  type: website
+
+website:
+  title: "Many Babies"
+  navbar:
+    left:
+      - href: index.qmd
+        text: MB1
+
+format:
+  html:
+    theme: cosmo
+    css: styles.css
+    toc: false
+
+execute: 
+  echo: false
+  message: false
+  warning: false
+  error: false
