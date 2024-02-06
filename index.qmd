@@ -134,6 +134,7 @@ Plot.plot({
       x: "effects",
       y: "order",
       stroke: "Method",
+      format: { y: null },
       channels: {
         Lab: "lab",
         "Effect size": (d) => d.effects.toFixed(2),
