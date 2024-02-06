@@ -1,1 +1,4 @@
 /* css styles */
+.tab-pane > p {
+  padding-top: 0em;
+}
