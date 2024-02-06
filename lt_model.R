@@ -35,7 +35,7 @@ mod_lmer <- lmer(log_lt ~ trial_type * method +
                  data = d_lmer)
 
 lt_coefs <- summary(mod_lmer)$coef |>
-  as_tibble |>
+  as_tibble() |>
   mutate_at(c("Estimate","Std. Error","df", "t value", "Pr(>|t|)"), 
             function (x) signif(x, digits = 3)) |>
   rename(SE = `Std. Error`, 
@@ -46,7 +46,8 @@ lt_coefs <- summary(mod_lmer)$coef |>
                   "Trial #", "Age", "NAE", "IDS * Eye-tracking", 
                   "IDS * HPP", 
                   "IDS * Trial #", "Trial # * Age", "IDS * Age", "IDS * NAE", 
-                  "Age * NAE", "IDS * Age * NAE"))
+                  "Age * NAE", "IDS * Age * NAE"),
+         .before = everything())
 
 # readr::write_rds(lt_coefs, "data/lt_coefs.rds")
 
@@ -57,7 +58,8 @@ lt_fits <- d_lmer |>
   group_by(trial_type, method, trial_num, nae, age_group) |>
   summarise(fitted = mean(fitted), n = n()) |>
   ungroup() |>
-  mutate(nae = if_else(nae, "NAE", "non-NAE"))
+  mutate(nae = if_else(nae, "NAE", "non-NAE"),
+         type_nae = paste(trial_type, nae, sep = ", "))
   # mutate(age_order = as.numeric(str_extract(age_group, "^[0-9]+")))
 
 readr::write_rds(lt_fits, "data/lt_fits.rds")

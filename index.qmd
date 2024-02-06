@@ -147,11 +147,13 @@ Plot.plot({
 
 ## Trial-level
 
+This plot shows fitted values from a mixed effects model predicting __looking time__ [y axis] from __trial number__ [x axis], __age__ [columns], __method__ [rows], __trial type__ [IDS red vs. ADS blue], and __language group__ [NAE dark vs. non-NAE light].
+
 ```{ojs}
 lt = transpose(lt_fits)
 age_groups = ["3-6 mo", "6-9 mo", "9-12 mo", "12-15 mo"]
 nae_vals = new Map([["North American English (NAE)", "NAE"],
-                    ["Not North American English", "non-NAE"]])
+                    ["Not North American English (non-NAE)", "non-NAE"]])
 ```
 
 ```{ojs}
@@ -179,12 +181,17 @@ Plot.plot({
     //labelArrow: "none", },
   fx: { label: "", domain: age_groups },
   fy: { label: "" },
-  color: { legend: true, marginLeft: 700, domain: ["IDS", "ADS"], label: "Trial type" },
+  color: {
+    legend: true,
+    //marginLeft: 700,
+    range: ["#CA0020", "#F4A582", "#0571B0", "#92C5DE"], // RdBu for 4 values
+    domain: ["IDS, NAE", "IDS, non-NAE", "ADS, NAE", "ADS, non-NAE"]
+  },
   marks: [
     Plot.line(ltf, {
       x: "trial_num",
       y: "fitted",
-      stroke: "trial_type",
+      stroke: "type_nae",
       z: (d) => `${d.trial_type} + ${d.nae}`,
       fx: "age_group",
       fy: "method",
@@ -192,12 +199,12 @@ Plot.plot({
     Plot.tip(ltf, Plot.pointer({
       x: "trial_num",
       y: "fitted",
-      stroke: "trial_type",
+      stroke: "type_nae",
       z: (d) => `${d.trial_type} + ${d.nae}`,
       fx: "age_group",
       fy: "method",
-      format: { x: null, y: null, fx: null, fy: null },
-      channels: { Language: "nae" },
+      format: { x: null, y: null, fx: null, fy: null, stroke: null },
+      channels: { "Trial type": "trial_type", "Language group": "nae" },
     })),
   ]
 })

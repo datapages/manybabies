@@ -11,6 +11,7 @@ website:
 format:
   html:
     theme: cosmo
+    fontsize: 1em
     css: styles.css
     toc: false
 
