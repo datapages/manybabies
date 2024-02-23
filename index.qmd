@@ -8,16 +8,14 @@ title-block-banner: "#9687A3"
 title-block-banner-color: white
 ---
 
-```{r}
+```{r setup}
 library(readr)
 library(stringr)
 library(dplyr)
 library(glue)
-# library(ggplot2)
-# library(ggthemes)
-# library(plotly)
-# theme_set(theme_minimal())
+```
 
+```{r meta}
 project <- redivis::user("mikabr")$project("mb1:qwpz")
 forest_table <- project$table("mb1_meta_output:e1x9")$to_tibble()
 
@@ -36,9 +34,26 @@ forest_data <- forest_table |>
   rename_with(\(s) str_replace_all(s, "\\.", "_"), .cols = everything())
 
 ojs_define(forest_data = forest_data)
+```
 
+```{r trials}
 lt_fits <- read_rds("data/lt_fits.rds")
 ojs_define(lt_fits = lt_fits)
+
+dataset <- redivis::user("datapages")$dataset("many_babies_1")
+trial_table <- dataset$table("03_data_trial_main")$to_tibble()
+
+trial_data <- trial_table |>
+  filter(!is.na(looking_time)) |>
+  mutate(nae = if_else(nae, "NAE", "non-NAE"),
+         type_nae = paste(trial_type, nae, sep = ", ")) |>
+  mutate(method = case_when(
+    method == "singlescreen" ~ "Central fixation",
+    method == "eyetracking" ~ "Eye tracking",
+    method == "hpp" ~ "HPP",
+    TRUE ~ method))
+
+ojs_define(trial_data = trial_data)
 ```
 
 ::: {.panel-tabset}
@@ -179,7 +194,7 @@ Plot.plot({
 ## Trial-level
 
 ::: {.caption}
-This plot shows fitted values from a mixed effects model predicting __looking time__ [y axis] from __trial number__ [x axis], __age__ [columns], __method__ [rows], __trial type__ [IDS red vs. ADS blue], and __language group__ [NAE dark vs. non-NAE light].
+The lines on this plot shows fitted values from a mixed effects model predicting __looking time__ [y axis] from __trial number__ [x axis], __age__ [columns], __method__ [rows], __trial type__ [IDS red vs. ADS blue], and __language group__ [NAE dark vs. non-NAE light].
 :::
 
 ```{ojs}
@@ -187,40 +202,47 @@ lt = transpose(lt_fits)
 age_groups = ["3-6 mo", "6-9 mo", "9-12 mo", "12-15 mo"]
 nae_vals = new Map([["North American English (NAE)", "NAE"],
                     ["Not North American English (non-NAE)", "non-NAE"]])
+                    
+td = transpose(trial_data)
 ```
 
 ```{ojs}
 //| panel: input
+viewof points = Inputs.toggle({label: "Show data points"})
+
 viewof nae = Inputs.checkbox(nae_vals, {value: Array.from(nae_vals.values())})
 ```
 
 ```{ojs}
 ltf = lt.filter(d => nae.includes(d.nae))
+tdf = td.filter(d => nae.includes(d.nae))
 
 Plot.plot({
-  style: { fontFamily: fontFamily }, // fontSize: fontSize },
+  style: { fontFamily: fontFamily },
   marginRight: 90,
   width: 800,
-  x: {
-    label: "Trial number",
-    //labelAnchor: "center",
-    //labelArrow: "none",
-    ticks: 4
-  },
+  x: { label: "Trial number", ticks: 4 },
   y: {
     label: "Looking time (seconds)",
+    domain: [d3.min(trial_data.looking_time), d3.max(trial_data.looking_time)]
   },
-    //labelAnchor: "center",
-    //labelArrow: "none", },
   fx: { label: "", domain: age_groups },
   fy: { label: "" },
   color: {
     legend: true,
-    //marginLeft: 700,
     range: ["#CA0020", "#F4A582", "#0571B0", "#92C5DE"], // RdBu for 4 values
     domain: ["IDS, NAE", "IDS, non-NAE", "ADS, NAE", "ADS, non-NAE"]
   },
   marks: [
+    Plot.dot(points ? tdf : [], {
+      x: "trial_num",
+      y: "looking_time",
+      fill: "type_nae",
+      fx: "age_group",
+      fy: "method",
+      opacity: 0.4,
+      r: 1
+    }),
     Plot.line(ltf, {
       x: "trial_num",
       y: "fitted",
