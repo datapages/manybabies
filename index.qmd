@@ -16,8 +16,8 @@ library(glue)
 ```
 
 ```{r meta}
-project <- redivis::user("mikabr")$project("mb1:qwpz")
-forest_table <- project$table("mb1_meta_output:e1x9")$to_tibble()
+project <- redivis::user("mikabr")$project("mb1")
+forest_table <- project$table("mb1_meta_output")$to_tibble()
 
 forest_data <- forest_table |>
   mutate(Method = if_else(method == "", "(Global)", method),
@@ -44,7 +44,8 @@ dataset <- redivis::user("datapages")$dataset("many_babies_1")
 trial_table <- dataset$table("03_data_trial_main")$to_tibble()
 
 trial_data <- trial_table |>
-  filter(!is.na(looking_time)) |>
+  filter(!is.na(looking_time),
+         trial_type != "train") |>
   mutate(nae = if_else(nae, "NAE", "non-NAE"),
          type_nae = paste(trial_type, nae, sep = ", ")) |>
   mutate(method = case_when(
@@ -269,7 +270,7 @@ Plot.plot({
 
 <iframe width="764" height="500" allowfullscreen src="https://redivis.com/embed/tables/nh93-d42a9b49d" style="border:0;"></iframe>
 
-<iframe width="764" height="500" allowfullscreen src="https://redivis.com/embed/tables/e1x9-6kp5kzqpa" style="border:0;"></iframe>
+<iframe width="764" height="500" allowfullscreen src="https://redivis.com/embed/tables/wjz0-3avcrf1gh" style="border:0;"></iframe>
 
 ```{r}
 # forest_data |>
