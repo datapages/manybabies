@@ -1,1 +1,1 @@
-Sitemap: https://langcog.github.io/manybabies-site/sitemap.xml
+Sitemap: https://datapages.github.io/manybabies/sitemap.xml
