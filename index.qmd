@@ -17,18 +17,16 @@ library(glue)
 
 ```{r meta}
 project <- redivis::user("mikabr")$project("mb1")
-forest_table <- project$table("mb1_meta_output")$to_tibble()
+forest_table <- project$table("mb1-meta_output")$to_tibble()
 
 forest_data <- forest_table |>
   mutate(Method = if_else(method == "", "(Global)", method),
-         # Method = method,
          meta = str_detect(lab, "Meta-analytic"),
          lab = if_else(meta, glue("({lab})"), lab),
          inverse_vars = if_else(meta, max(inverse_vars, na.rm = TRUE),
                                 inverse_vars),
          age_label = if_else(is.na(age_group), "", glue("[{age_group}]")),
          y_label = paste(lab, age_label)) |>
-  # unite("y_label", lab, age_group, sep = " | ", na.rm = TRUE) |>
   arrange(Method, desc(meta), effects) |>
   mutate(order = 1:n()) |>
   rename_with(\(s) str_replace_all(s, "\\.", "_"), .cols = everything())
@@ -37,7 +35,9 @@ ojs_define(forest_data = forest_data)
 ```
 
 ```{r trials}
-lt_fits <- read_rds("data/lt_fits.rds")
+lt_fits <- project$table("mb1-lt-model_output")$to_tibble() |>
+  mutate(nae = if_else(nae, "NAE", "non-NAE"),
+         type_nae = paste(trial_type, nae, sep = ", "))
 ojs_define(lt_fits = lt_fits)
 
 dataset <- redivis::user("datapages")$dataset("many_babies_1")
