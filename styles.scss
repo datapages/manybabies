@@ -1,0 +1,26 @@
+/*-- scss:uses --*/
+
+/*-- scss:defaults --*/
+
+/*-- scss:rules --*/
+
+.tab-pane > p { padding-top: 0em; }
+
+.caption {
+  font-size: 80%;
+  line-height: normal;
+}
+
+.nav-pills {
+  .nav-tabs, .tab-content { border: none; }
+  
+  .nav-link {
+    padding-top: 0.25rem;
+    padding-bottom: 0.25rem;
+    border-radius: var(--quarto-border-radius);
+    
+    &.active { background-color: #9687A3; }
+  }
+}
+
+.nav-link, .nav-link:hover { color: #7f3b97; }

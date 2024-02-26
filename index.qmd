@@ -57,9 +57,13 @@ trial_data <- trial_table |>
 ojs_define(trial_data = trial_data)
 ```
 
-::: {.panel-tabset}
+:::: {.panel-tabset}
 
 ## Meta-analysis
+
+::: {.panel-tabset .nav-pills}
+
+### Plot
 
 ::: {.caption}
 Forest plot of the meta-analytic results for infant-directed-speech preference. The standardized __effect size__ [x axis] is shown for each __lab__ and __age group__ [y axis]; error bars indicate 95% confidence intervals. Effects are grouped by __method__ [colors]: central fixation, eye tracking, or head-turn preference procedure (HPP). Larger plotted points correspond to greater __inverse variance__. For each method, the diamond and associated error bars represent the __meta-analytic estimate__ from the method-moderated model and the estimate's 95% confidence interval. The top diamond shows the global meta-analytic estimate and 95% confidence interval from the unmoderated model.
@@ -192,7 +196,17 @@ Plot.plot({
 })
 ```
 
-## Trial-level
+### Data
+
+<iframe width="100%" height="500" allowfullscreen src="https://redivis.com/embed/tables/wjz0-3avcrf1gh" style="border:0;"></iframe>
+
+:::
+
+## Aggregated
+
+::: {.panel-tabset .nav-pills}
+
+## Plot
 
 ::: {.caption}
 The lines on this plot shows fitted values from a mixed effects model predicting __looking time__ [y axis] from __trial number__ [x axis], __age__ [columns], __method__ [rows], __trial type__ [IDS red vs. ADS blue], and __language group__ [NAE dark vs. non-NAE light].
@@ -268,50 +282,10 @@ Plot.plot({
 
 ## Data
 
-<iframe width="764" height="500" allowfullscreen src="https://redivis.com/embed/tables/nh93-d42a9b49d" style="border:0;"></iframe>
+<iframe width="100%" height="500" allowfullscreen src="https://redivis.com/embed/tables/hkp7-3m6rj4xt8" style="border:0;"></iframe>
 
-<iframe width="764" height="500" allowfullscreen src="https://redivis.com/embed/tables/wjz0-3avcrf1gh" style="border:0;"></iframe>
-
-```{r}
-# forest_data |>
-#   filter(!meta) |>
-#   mutate(across(where(is.numeric), \(x) round(x, 2))) |>
-#   select(method, lab, effect = effects, cil = effects_cil, cih = effects_cih,
-#          inverse_var = inverse_vars) |>
-#   arrange(method, lab) |>
-#   DT::datatable(class = "compact", style = "bootstrap4", rownames = FALSE,
-#                 options = list(pageLength = 20))
-```
-
-<!--
-## Download
-
-The data is hosted as a [dataset on Redivis](https://redivis.com/datasets/9esa-7gafrp2y5), where you can view and download it. You can also access it programmatically using the Redivis API in R or Python. For example:
-
-::: {.panel-tabset}
-
-## R
-
-```{r}
-#| eval: false
-#| echo: true
-
-dataset <- redivis::organization("stanford_templates")$dataset("many_babies_1")
-df <- dataset$table("03_data_trial_main")$to_tibble()
-```
-
-## Python
-
-```{python}
-#| eval: false
-#| echo: true
-#| python.reticulate: false
-
-dataset = redivis.organization('stanford_templates').dataset('many_babies_1')
-df = dataset.table('03_data_trial_main').to_pandas_dataframe()
-```
+<iframe width="100%" height="500" allowfullscreen src="https://redivis.com/embed/tables/nh93-d42a9b49d" style="border:0;"></iframe>
 
 :::
--->
 
-:::
+::::

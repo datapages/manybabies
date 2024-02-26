@@ -10,9 +10,8 @@ website:
 
 format:
   html:
-    theme: cosmo
+    theme: [cosmo, styles.scss]
     fontsize: 1em
-    css: styles.css
     toc: false
 
 execute: 
