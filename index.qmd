@@ -28,8 +28,9 @@ forest_data <- forest_table |>
          age_label = if_else(is.na(age_group), "", glue("[{age_group}]")),
          y_label = paste(lab, age_label)) |>
   arrange(Method, desc(meta), effects) |>
-  mutate(order = 1:n()) |>
-  rename_with(\(s) str_replace_all(s, "\\.", "_"), .cols = everything())
+  mutate(order = 1:n())
+  # arrange(age_group)
+  # rename_with(\(s) str_replace_all(s, "\\.", "_"), .cols = everything())
 
 ojs_define(forest_data = forest_data)
 ```
@@ -86,35 +87,37 @@ methodIndeces = d3.rollup(
 )
 
 method_vals = Array.from(methodIndeces.keys()).filter(x => x)
+
+age_sort = (a, b) => parseInt(a.split('-')[0], 10) - parseInt(b.split('-')[0], 10)
+age_vals = Array.from(new Set(forest_data.age_group)).filter(d => d).sort(age_sort)
 ```
 
 ```{ojs}
 //| panel: input
-viewof methods = Inputs.checkbox(method_vals, {value: method_vals})
+viewof methods = Inputs.checkbox(method_vals, {value: method_vals, label: "Methods"})
+viewof ages = Inputs.checkbox(age_vals, {value: age_vals, label: "Age groups"})
 ```
 
 ```{ojs}
 methodLabels = Array.from(methodIndeces.values()).filter(x => methods.includes(x.Method))
 
-fd = d.filter(d => !d.Method | methods.includes(d.Method))
+fd = d.filter(d => methods.includes(d.Method))
+      .filter(d => !d.age_group | ages.includes(d.age_group))
 ```
 
 ```{ojs}
 Plot.plot({
-  style: { fontFamily: fontFamily }, //, fontSize: fontSize },
+  style: { fontFamily: fontFamily },
   marginLeft: 155,
   width: 800,
   x: {
-    //nice: true,
     label: "Effect size",
     line: true,
-    //labelAnchor: "center",
     domain: [d3.min(forest_data.effects_cil) - pad, d3.max(forest_data.effects_cih) + pad],
   },
   y: {
     grid: true,
     line: true,
-    //label: "",
     label: "Lab and age group",
     labelAnchor: "top",
     padding: 1,
@@ -161,7 +164,6 @@ Plot.plot({
       stroke: "white",
       strokeWidth: 12,
       fontWeight: "bold",
-      //dy: (d) => d.Method == "(Global)" ? 10 : -20,
       dy: -6,
       fontSize: 18,
       textAnchor: "end"
@@ -174,7 +176,6 @@ Plot.plot({
       stroke: "white",
       strokeWidth: 12,
       fontWeight: "bold",
-      //dy: (d) => d.Method == "(Global)" ? 10 : -20,
       dy: 6,
       fontSize: 18,
       textAnchor: "end"
@@ -189,7 +190,6 @@ Plot.plot({
         "Age group": "age_group",
         "Effect size": (d) => d.effects.toFixed(2),
         CI: (d) => `[${d.effects_cil.toFixed(2)}, ${d.effects_cih.toFixed(2)}]`,
-        //Method: "method"
       },
     })),
   ]
