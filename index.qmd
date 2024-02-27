@@ -284,7 +284,7 @@ Plot.plot({
 
 <iframe width="100%" height="500" allowfullscreen src="https://redivis.com/embed/tables/hkp7-3m6rj4xt8" style="border:0;"></iframe>
 
-<iframe width="100%" height="500" allowfullscreen src="https://redivis.com/embed/tables/nh93-d42a9b49d" style="border:0;"></iframe>
+<iframe width="100%" height="500" allowfullscreen src="https://redivis.com/embed/tables/nh93-awnnkv49p" style="border:0;"></iframe>
 
 :::
 
