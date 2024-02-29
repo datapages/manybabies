@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.3.450">
+<meta name="generator" content="quarto-1.4.550">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -23,7 +23,7 @@ ul.task-list li input[type="checkbox"] {
 }
 /* CSS for syntax highlighting */
 pre > code.sourceCode { white-space: pre; position: relative; }
-pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span { line-height: 1.25; }
 pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
 code.sourceCode > span { color: inherit; text-decoration: inherit; }
@@ -80,7 +80,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   "collapse-after": 3,
   "panel-placement": "end",
   "type": "overlay",
-  "limit": 20,
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -89,6 +95,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     "search-more-match-text": "more match in this document",
     "search-more-matches-text": "more matches in this document",
     "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
     "search-detached-cancel-button-title": "Cancel",
     "search-submit-button-title": "Submit",
     "search-label": "Search"
@@ -129,10 +136,10 @@ background: #9687A3;
 <body class="nav-fixed fullcontent">
 
 <div id="quarto-search-results"></div>
-  <header id="quarto-header" class="headroom fixed-top">
-    <nav class="navbar navbar-expand-lg navbar-dark ">
+  <header id="quarto-header" class="headroom fixed-top quarto-banner">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
       <div class="navbar-container container-fluid">
-      <div class="navbar-brand-container">
+      <div class="navbar-brand-container mx-auto">
     <a class="navbar-brand" href="./index.html">
     <span class="navbar-title">ManyBabies</span>
     </a>
@@ -144,13 +151,13 @@ background: #9687A3;
           <div class="collapse navbar-collapse" id="navbarCollapse">
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
-    <a class="nav-link active" href="./index.html" rel="" target="" aria-current="page">
- <span class="menu-text">MB1</span></a>
+    <a class="nav-link active" href="./index.html" aria-current="page"> 
+<span class="menu-text">MB1</span></a>
   </li>  
 </ul>
-            <div class="quarto-navbar-tools ms-auto">
-</div>
           </div> <!-- /navcollapse -->
+          <div class="quarto-navbar-tools">
+</div>
       </div> <!-- /container-fluid -->
     </nav>
 </header>
@@ -183,6 +190,7 @@ background: #9687A3;
     
 <!-- main -->
 <main class="content quarto-banner-title-block" id="quarto-document-content">
+
 
 
 
@@ -424,7 +432,6 @@ background: #9687A3;
 </div>
 </div>
 <div id="tabset-1-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-1-2-tab">
-
 <iframe width="100%" height="500" allowfullscreen="" src="https://redivis.com/embed/tables/wjz0-3avcrf1gh" style="border:0;">
 </iframe>
 </div>
@@ -568,10 +575,8 @@ background: #9687A3;
 </div>
 </div>
 <div id="tabset-2-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-2-2-tab">
-
 <iframe width="100%" height="500" allowfullscreen="" src="https://redivis.com/embed/tables/hkp7-3m6rj4xt8" style="border:0;">
 </iframe>
-
 <iframe width="100%" height="500" allowfullscreen="" src="https://redivis.com/embed/tables/nh93-awnnkv49p" style="border:0;">
 </iframe>
 </div>
@@ -585,7 +590,7 @@ background: #9687A3;
 
 </main> <!-- /main -->
 <script type="ojs-module-contents">
-{"contents":[{"methodName":"interpret","cellName":"ojs-cell-1","inline":false,"source":"Plot = import(\"https://esm.sh/@observablehq/plot\")\nfontFamily = \"Source Sans Pro\"\nfontSize = \".75rem\"\n\nd = transpose(forest_data)\n\nmaxX = d3.max(forest_data.effects_cih)\npad = 0.1\n\nmethodIndeces = d3.rollup(\n  d,\n  (values) => ({Method: values[0].Method, order: d3.min(values, (d) => d.order)}),\n  (d) => d.Method\n)\n\nmethod_vals = Array.from(methodIndeces.keys()).filter(x => x)\n\nage_sort = (a, b) => parseInt(a.split('-')[0], 10) - parseInt(b.split('-')[0], 10)\nage_vals = Array.from(new Set(forest_data.age_group)).filter(d => d).sort(age_sort)\n"},{"methodName":"interpret","cellName":"ojs-cell-2","inline":false,"source":"viewof methods = Inputs.checkbox(method_vals, {value: method_vals, label: \"Methods\"})\nviewof ages = Inputs.checkbox(age_vals, {value: age_vals, label: \"Age groups\"})\n"},{"methodName":"interpret","cellName":"ojs-cell-3","inline":false,"source":"methodLabels = Array.from(methodIndeces.values()).filter(x => methods.includes(x.Method))\n\nfd = d.filter(d => methods.includes(d.Method))\n      .filter(d => !d.age_group | ages.includes(d.age_group))\n"},{"methodName":"interpret","cellName":"ojs-cell-4","inline":false,"source":"Plot.plot({\n  style: { fontFamily: fontFamily },\n  marginLeft: 155,\n  width: 800,\n  x: {\n    label: \"Effect size\",\n    line: true,\n    domain: [d3.min(forest_data.effects_cil) - pad, d3.max(forest_data.effects_cih) + pad],\n  },\n  y: {\n    grid: true,\n    line: true,\n    label: \"Lab and age group\",\n    labelAnchor: \"top\",\n    padding: 1,\n    type: \"point\",\n    fontVariant: (d) => d.meta ? \"small-caps\" : \"normal\",\n    tickFormat: (value) => fd.find((d) => d.order === value).y_label,\n  },\n  marks: [\n    Plot.ruleX([0], {stroke: \"lightgrey\", strokeDasharray: [3, 3]}),\n    Plot.ruleY(fd.filter(d => d.meta), {\n      y: \"order\",\n      stroke: \"lightgrey\"\n    }),\n    Plot.ruleX(fd, Plot.pointerY({x: \"effects\", py: \"order\", stroke: \"Method\"})),\n    Plot.ruleY(fd, Plot.pointerY({px: \"effects\", y: \"order\", stroke: \"lightgrey\"})),\n    Plot.link(fd, {\n      y: \"order\",\n      x1: \"effects_cil\",\n      x2: \"effects_cih\"\n    }),\n    Plot.dot(fd.filter(d => d.meta), {\n      x: \"effects\",\n      y: \"order\",\n      stroke: \"Method\",\n      fill: \"white\",\n      symbol: \"diamond\",\n      strokeWidth: 2,\n      r: \"inverse_vars\",\n    }),\n    Plot.dot(fd.filter(d => !d.meta), {\n      x: \"effects\",\n      y: \"order\",\n      stroke: \"Method\",\n      fill: \"Method\",\n      symbol: \"circle\",\n      strokeWidth: 2,\n      r: \"inverse_vars\",\n    }),\n    Plot.text(methodLabels.filter((d) => d.Method == \"(Global)\"), {\n      x: maxX + 0.1,\n      y: \"order\",\n      text: \"Method\",\n      fill: \"Method\",\n      stroke: \"white\",\n      strokeWidth: 12,\n      fontWeight: \"bold\",\n      dy: -6,\n      fontSize: 18,\n      textAnchor: \"end\"\n    }),\n    Plot.text(methodLabels.filter((d) => d.Method !== \"(Global)\"), {\n      x: maxX + 0.1,\n      y: \"order\",\n      text: \"Method\",\n      fill: \"Method\",\n      stroke: \"white\",\n      strokeWidth: 12,\n      fontWeight: \"bold\",\n      dy: 6,\n      fontSize: 18,\n      textAnchor: \"end\"\n    }),\n    Plot.tip(fd, Plot.pointerY({\n      x: \"effects\",\n      y: \"order\",\n      stroke: \"Method\",\n      format: { y: null },\n      channels: {\n        Lab: \"lab\",\n        \"Age group\": \"age_group\",\n        \"Effect size\": (d) => d.effects.toFixed(2),\n        CI: (d) => `[${d.effects_cil.toFixed(2)}, ${d.effects_cih.toFixed(2)}]`,\n      },\n    })),\n  ]\n})\n"},{"methodName":"interpret","cellName":"ojs-cell-5","inline":false,"source":"lt = transpose(lt_fits)\nage_groups = [\"3-6 mo\", \"6-9 mo\", \"9-12 mo\", \"12-15 mo\"]\nnae_vals = new Map([[\"North American English (NAE)\", \"NAE\"],\n                    [\"Not North American English (non-NAE)\", \"non-NAE\"]])\n                    \ntd = transpose(trial_data)\n"},{"methodName":"interpret","cellName":"ojs-cell-6","inline":false,"source":"viewof points = Inputs.toggle({label: \"Show data points\"})\n\nviewof nae = Inputs.checkbox(nae_vals, {value: Array.from(nae_vals.values())})\n"},{"methodName":"interpret","cellName":"ojs-cell-7","inline":false,"source":"ltf = lt.filter(d => nae.includes(d.nae))\ntdf = td.filter(d => nae.includes(d.nae))\n\nPlot.plot({\n  style: { fontFamily: fontFamily },\n  marginRight: 90,\n  width: 800,\n  x: { label: \"Trial number\", ticks: 4 },\n  y: {\n    label: \"Looking time (seconds)\",\n    domain: [d3.min(trial_data.looking_time), d3.max(trial_data.looking_time)]\n  },\n  fx: { label: \"\", domain: age_groups },\n  fy: { label: \"\" },\n  color: {\n    legend: true,\n    range: [\"#CA0020\", \"#F4A582\", \"#0571B0\", \"#92C5DE\"], // RdBu for 4 values\n    domain: [\"IDS, NAE\", \"IDS, non-NAE\", \"ADS, NAE\", \"ADS, non-NAE\"]\n  },\n  marks: [\n    Plot.dot(points ? tdf : [], {\n      x: \"trial_num\",\n      y: \"looking_time\",\n      fill: \"type_nae\",\n      fx: \"age_group\",\n      fy: \"method\",\n      opacity: 0.4,\n      r: 1\n    }),\n    Plot.line(ltf, {\n      x: \"trial_num\",\n      y: \"fitted\",\n      stroke: \"type_nae\",\n      z: (d) => `${d.trial_type} + ${d.nae}`,\n      fx: \"age_group\",\n      fy: \"method\",\n    }),\n    Plot.tip(ltf, Plot.pointer({\n      x: \"trial_num\",\n      y: \"fitted\",\n      stroke: \"type_nae\",\n      z: (d) => `${d.trial_type} + ${d.nae}`,\n      fx: \"age_group\",\n      fy: \"method\",\n      format: { x: null, y: null, fx: null, fy: null, stroke: null },\n      channels: { \"Trial type\": \"trial_type\", \"Language group\": \"nae\" },\n    })),\n  ]\n})\n"},{"methodName":"interpretQuiet","source":"shinyInput('methods')"},{"methodName":"interpretQuiet","source":"shinyInput('ages')"},{"methodName":"interpretQuiet","source":"shinyInput('points')"},{"methodName":"interpretQuiet","source":"shinyInput('nae')"}]}
+eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6IlBsb3QgPSBpbXBvcnQoXCJodHRwczovL2VzbS5zaC9Ab2JzZXJ2YWJsZWhxL3Bsb3RcIilcbmZvbnRGYW1pbHkgPSBcIlNvdXJjZSBTYW5zIFByb1wiXG5mb250U2l6ZSA9IFwiLjc1cmVtXCJcblxuZCA9IHRyYW5zcG9zZShmb3Jlc3RfZGF0YSlcblxubWF4WCA9IGQzLm1heChmb3Jlc3RfZGF0YS5lZmZlY3RzX2NpaClcbnBhZCA9IDAuMVxuXG5tZXRob2RJbmRlY2VzID0gZDMucm9sbHVwKFxuICBkLFxuICAodmFsdWVzKSA9PiAoe01ldGhvZDogdmFsdWVzWzBdLk1ldGhvZCwgb3JkZXI6IGQzLm1pbih2YWx1ZXMsIChkKSA9PiBkLm9yZGVyKX0pLFxuICAoZCkgPT4gZC5NZXRob2RcbilcblxubWV0aG9kX3ZhbHMgPSBBcnJheS5mcm9tKG1ldGhvZEluZGVjZXMua2V5cygpKS5maWx0ZXIoeCA9PiB4KVxuXG5hZ2Vfc29ydCA9IChhLCBiKSA9PiBwYXJzZUludChhLnNwbGl0KCctJylbMF0sIDEwKSAtIHBhcnNlSW50KGIuc3BsaXQoJy0nKVswXSwgMTApXG5hZ2VfdmFscyA9IEFycmF5LmZyb20obmV3IFNldChmb3Jlc3RfZGF0YS5hZ2VfZ3JvdXApKS5maWx0ZXIoZCA9PiBkKS5zb3J0KGFnZV9zb3J0KVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0yIiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoidmlld29mIG1ldGhvZHMgPSBJbnB1dHMuY2hlY2tib3gobWV0aG9kX3ZhbHMsIHt2YWx1ZTogbWV0aG9kX3ZhbHMsIGxhYmVsOiBcIk1ldGhvZHNcIn0pXG52aWV3b2YgYWdlcyA9IElucHV0cy5jaGVja2JveChhZ2VfdmFscywge3ZhbHVlOiBhZ2VfdmFscywgbGFiZWw6IFwiQWdlIGdyb3Vwc1wifSlcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMyIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Im1ldGhvZExhYmVscyA9IEFycmF5LmZyb20obWV0aG9kSW5kZWNlcy52YWx1ZXMoKSkuZmlsdGVyKHggPT4gbWV0aG9kcy5pbmNsdWRlcyh4Lk1ldGhvZCkpXG5cbmZkID0gZC5maWx0ZXIoZCA9PiBtZXRob2RzLmluY2x1ZGVzKGQuTWV0aG9kKSlcbiAgICAgIC5maWx0ZXIoZCA9PiAhZC5hZ2VfZ3JvdXAgfCBhZ2VzLmluY2x1ZGVzKGQuYWdlX2dyb3VwKSlcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtNCIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6IlBsb3QucGxvdCh7XG4gIHN0eWxlOiB7IGZvbnRGYW1pbHk6IGZvbnRGYW1pbHkgfSxcbiAgbWFyZ2luTGVmdDogMTU1LFxuICB3aWR0aDogODAwLFxuICB4OiB7XG4gICAgbGFiZWw6IFwiRWZmZWN0IHNpemVcIixcbiAgICBsaW5lOiB0cnVlLFxuICAgIGRvbWFpbjogW2QzLm1pbihmb3Jlc3RfZGF0YS5lZmZlY3RzX2NpbCkgLSBwYWQsIGQzLm1heChmb3Jlc3RfZGF0YS5lZmZlY3RzX2NpaCkgKyBwYWRdLFxuICB9LFxuICB5OiB7XG4gICAgZ3JpZDogdHJ1ZSxcbiAgICBsaW5lOiB0cnVlLFxuICAgIGxhYmVsOiBcIkxhYiBhbmQgYWdlIGdyb3VwXCIsXG4gICAgbGFiZWxBbmNob3I6IFwidG9wXCIsXG4gICAgcGFkZGluZzogMSxcbiAgICB0eXBlOiBcInBvaW50XCIsXG4gICAgZm9udFZhcmlhbnQ6IChkKSA9PiBkLm1ldGEgPyBcInNtYWxsLWNhcHNcIiA6IFwibm9ybWFsXCIsXG4gICAgdGlja0Zvcm1hdDogKHZhbHVlKSA9PiBmZC5maW5kKChkKSA9PiBkLm9yZGVyID09PSB2YWx1ZSkueV9sYWJlbCxcbiAgfSxcbiAgbWFya3M6IFtcbiAgICBQbG90LnJ1bGVYKFswXSwge3N0cm9rZTogXCJsaWdodGdyZXlcIiwgc3Ryb2tlRGFzaGFycmF5OiBbMywgM119KSxcbiAgICBQbG90LnJ1bGVZKGZkLmZpbHRlcihkID0+IGQubWV0YSksIHtcbiAgICAgIHk6IFwib3JkZXJcIixcbiAgICAgIHN0cm9rZTogXCJsaWdodGdyZXlcIlxuICAgIH0pLFxuICAgIFBsb3QucnVsZVgoZmQsIFBsb3QucG9pbnRlclkoe3g6IFwiZWZmZWN0c1wiLCBweTogXCJvcmRlclwiLCBzdHJva2U6IFwiTWV0aG9kXCJ9KSksXG4gICAgUGxvdC5ydWxlWShmZCwgUGxvdC5wb2ludGVyWSh7cHg6IFwiZWZmZWN0c1wiLCB5OiBcIm9yZGVyXCIsIHN0cm9rZTogXCJsaWdodGdyZXlcIn0pKSxcbiAgICBQbG90LmxpbmsoZmQsIHtcbiAgICAgIHk6IFwib3JkZXJcIixcbiAgICAgIHgxOiBcImVmZmVjdHNfY2lsXCIsXG4gICAgICB4MjogXCJlZmZlY3RzX2NpaFwiXG4gICAgfSksXG4gICAgUGxvdC5kb3QoZmQuZmlsdGVyKGQgPT4gZC5tZXRhKSwge1xuICAgICAgeDogXCJlZmZlY3RzXCIsXG4gICAgICB5OiBcIm9yZGVyXCIsXG4gICAgICBzdHJva2U6IFwiTWV0aG9kXCIsXG4gICAgICBmaWxsOiBcIndoaXRlXCIsXG4gICAgICBzeW1ib2w6IFwiZGlhbW9uZFwiLFxuICAgICAgc3Ryb2tlV2lkdGg6IDIsXG4gICAgICByOiBcImludmVyc2VfdmFyc1wiLFxuICAgIH0pLFxuICAgIFBsb3QuZG90KGZkLmZpbHRlcihkID0+ICFkLm1ldGEpLCB7XG4gICAgICB4OiBcImVmZmVjdHNcIixcbiAgICAgIHk6IFwib3JkZXJcIixcbiAgICAgIHN0cm9rZTogXCJNZXRob2RcIixcbiAgICAgIGZpbGw6IFwiTWV0aG9kXCIsXG4gICAgICBzeW1ib2w6IFwiY2lyY2xlXCIsXG4gICAgICBzdHJva2VXaWR0aDogMixcbiAgICAgIHI6IFwiaW52ZXJzZV92YXJzXCIsXG4gICAgfSksXG4gICAgUGxvdC50ZXh0KG1ldGhvZExhYmVscy5maWx0ZXIoKGQpID0+IGQuTWV0aG9kID09IFwiKEdsb2JhbClcIiksIHtcbiAgICAgIHg6IG1heFggKyAwLjEsXG4gICAgICB5OiBcIm9yZGVyXCIsXG4gICAgICB0ZXh0OiBcIk1ldGhvZFwiLFxuICAgICAgZmlsbDogXCJNZXRob2RcIixcbiAgICAgIHN0cm9rZTogXCJ3aGl0ZVwiLFxuICAgICAgc3Ryb2tlV2lkdGg6IDEyLFxuICAgICAgZm9udFdlaWdodDogXCJib2xkXCIsXG4gICAgICBkeTogLTYsXG4gICAgICBmb250U2l6ZTogMTgsXG4gICAgICB0ZXh0QW5jaG9yOiBcImVuZFwiXG4gICAgfSksXG4gICAgUGxvdC50ZXh0KG1ldGhvZExhYmVscy5maWx0ZXIoKGQpID0+IGQuTWV0aG9kICE9PSBcIihHbG9iYWwpXCIpLCB7XG4gICAgICB4OiBtYXhYICsgMC4xLFxuICAgICAgeTogXCJvcmRlclwiLFxuICAgICAgdGV4dDogXCJNZXRob2RcIixcbiAgICAgIGZpbGw6IFwiTWV0aG9kXCIsXG4gICAgICBzdHJva2U6IFwid2hpdGVcIixcbiAgICAgIHN0cm9rZVdpZHRoOiAxMixcbiAgICAgIGZvbnRXZWlnaHQ6IFwiYm9sZFwiLFxuICAgICAgZHk6IDYsXG4gICAgICBmb250U2l6ZTogMTgsXG4gICAgICB0ZXh0QW5jaG9yOiBcImVuZFwiXG4gICAgfSksXG4gICAgUGxvdC50aXAoZmQsIFBsb3QucG9pbnRlclkoe1xuICAgICAgeDogXCJlZmZlY3RzXCIsXG4gICAgICB5OiBcIm9yZGVyXCIsXG4gICAgICBzdHJva2U6IFwiTWV0aG9kXCIsXG4gICAgICBmb3JtYXQ6IHsgeTogbnVsbCB9LFxuICAgICAgY2hhbm5lbHM6IHtcbiAgICAgICAgTGFiOiBcImxhYlwiLFxuICAgICAgICBcIkFnZSBncm91cFwiOiBcImFnZV9ncm91cFwiLFxuICAgICAgICBcIkVmZmVjdCBzaXplXCI6IChkKSA9PiBkLmVmZmVjdHMudG9GaXhlZCgyKSxcbiAgICAgICAgQ0k6IChkKSA9PiBgWyR7ZC5lZmZlY3RzX2NpbC50b0ZpeGVkKDIpfSwgJHtkLmVmZmVjdHNfY2loLnRvRml4ZWQoMil9XWAsXG4gICAgICB9LFxuICAgIH0pKSxcbiAgXVxufSlcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtNSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Imx0ID0gdHJhbnNwb3NlKGx0X2ZpdHMpXG5hZ2VfZ3JvdXBzID0gW1wiMy02IG1vXCIsIFwiNi05IG1vXCIsIFwiOS0xMiBtb1wiLCBcIjEyLTE1IG1vXCJdXG5uYWVfdmFscyA9IG5ldyBNYXAoW1tcIk5vcnRoIEFtZXJpY2FuIEVuZ2xpc2ggKE5BRSlcIiwgXCJOQUVcIl0sXG4gICAgICAgICAgICAgICAgICAgIFtcIk5vdCBOb3J0aCBBbWVyaWNhbiBFbmdsaXNoIChub24tTkFFKVwiLCBcIm5vbi1OQUVcIl1dKVxuICAgICAgICAgICAgICAgICAgICBcbnRkID0gdHJhbnNwb3NlKHRyaWFsX2RhdGEpXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTYiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJ2aWV3b2YgcG9pbnRzID0gSW5wdXRzLnRvZ2dsZSh7bGFiZWw6IFwiU2hvdyBkYXRhIHBvaW50c1wifSlcblxudmlld29mIG5hZSA9IElucHV0cy5jaGVja2JveChuYWVfdmFscywge3ZhbHVlOiBBcnJheS5mcm9tKG5hZV92YWxzLnZhbHVlcygpKX0pXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTciLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJsdGYgPSBsdC5maWx0ZXIoZCA9PiBuYWUuaW5jbHVkZXMoZC5uYWUpKVxudGRmID0gdGQuZmlsdGVyKGQgPT4gbmFlLmluY2x1ZGVzKGQubmFlKSlcblxuUGxvdC5wbG90KHtcbiAgc3R5bGU6IHsgZm9udEZhbWlseTogZm9udEZhbWlseSB9LFxuICBtYXJnaW5SaWdodDogOTAsXG4gIHdpZHRoOiA4MDAsXG4gIHg6IHsgbGFiZWw6IFwiVHJpYWwgbnVtYmVyXCIsIHRpY2tzOiA0IH0sXG4gIHk6IHtcbiAgICBsYWJlbDogXCJMb29raW5nIHRpbWUgKHNlY29uZHMpXCIsXG4gICAgZG9tYWluOiBbZDMubWluKHRyaWFsX2RhdGEubG9va2luZ190aW1lKSwgZDMubWF4KHRyaWFsX2RhdGEubG9va2luZ190aW1lKV1cbiAgfSxcbiAgZng6IHsgbGFiZWw6IFwiXCIsIGRvbWFpbjogYWdlX2dyb3VwcyB9LFxuICBmeTogeyBsYWJlbDogXCJcIiB9LFxuICBjb2xvcjoge1xuICAgIGxlZ2VuZDogdHJ1ZSxcbiAgICByYW5nZTogW1wiI0NBMDAyMFwiLCBcIiNGNEE1ODJcIiwgXCIjMDU3MUIwXCIsIFwiIzkyQzVERVwiXSwgLy8gUmRCdSBmb3IgNCB2YWx1ZXNcbiAgICBkb21haW46IFtcIklEUywgTkFFXCIsIFwiSURTLCBub24tTkFFXCIsIFwiQURTLCBOQUVcIiwgXCJBRFMsIG5vbi1OQUVcIl1cbiAgfSxcbiAgbWFya3M6IFtcbiAgICBQbG90LmRvdChwb2ludHMgPyB0ZGYgOiBbXSwge1xuICAgICAgeDogXCJ0cmlhbF9udW1cIixcbiAgICAgIHk6IFwibG9va2luZ190aW1lXCIsXG4gICAgICBmaWxsOiBcInR5cGVfbmFlXCIsXG4gICAgICBmeDogXCJhZ2VfZ3JvdXBcIixcbiAgICAgIGZ5OiBcIm1ldGhvZFwiLFxuICAgICAgb3BhY2l0eTogMC40LFxuICAgICAgcjogMVxuICAgIH0pLFxuICAgIFBsb3QubGluZShsdGYsIHtcbiAgICAgIHg6IFwidHJpYWxfbnVtXCIsXG4gICAgICB5OiBcImZpdHRlZFwiLFxuICAgICAgc3Ryb2tlOiBcInR5cGVfbmFlXCIsXG4gICAgICB6OiAoZCkgPT4gYCR7ZC50cmlhbF90eXBlfSArICR7ZC5uYWV9YCxcbiAgICAgIGZ4OiBcImFnZV9ncm91cFwiLFxuICAgICAgZnk6IFwibWV0aG9kXCIsXG4gICAgfSksXG4gICAgUGxvdC50aXAobHRmLCBQbG90LnBvaW50ZXIoe1xuICAgICAgeDogXCJ0cmlhbF9udW1cIixcbiAgICAgIHk6IFwiZml0dGVkXCIsXG4gICAgICBzdHJva2U6IFwidHlwZV9uYWVcIixcbiAgICAgIHo6IChkKSA9PiBgJHtkLnRyaWFsX3R5cGV9ICsgJHtkLm5hZX1gLFxuICAgICAgZng6IFwiYWdlX2dyb3VwXCIsXG4gICAgICBmeTogXCJtZXRob2RcIixcbiAgICAgIGZvcm1hdDogeyB4OiBudWxsLCB5OiBudWxsLCBmeDogbnVsbCwgZnk6IG51bGwsIHN0cm9rZTogbnVsbCB9LFxuICAgICAgY2hhbm5lbHM6IHsgXCJUcmlhbCB0eXBlXCI6IFwidHJpYWxfdHlwZVwiLCBcIkxhbmd1YWdlIGdyb3VwXCI6IFwibmFlXCIgfSxcbiAgICB9KSksXG4gIF1cbn0pXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsInNvdXJjZSI6InNoaW55SW5wdXQoJ21ldGhvZHMnKSJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoic2hpbnlJbnB1dCgnYWdlcycpIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJzaGlueUlucHV0KCdwb2ludHMnKSJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoic2hpbnlJbnB1dCgnbmFlJykifV19
 </script>
 <script type="module">
 if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
@@ -674,10 +679,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     // clear code selection
     e.clearSelection();
   });
-  function tippyHover(el, contentFn) {
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
     const config = {
       allowHTML: true,
-      content: contentFn,
       maxWidth: 500,
       delay: 100,
       arrow: false,
@@ -687,8 +691,17 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       interactive: true,
       interactiveBorder: 10,
       theme: 'quarto',
-      placement: 'bottom-start'
+      placement: 'bottom-start',
     };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
     window.tippy(el, config); 
   }
   const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
@@ -701,6 +714,125 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       const id = href.replace(/^#\/?/, "");
       const note = window.document.getElementById(id);
       return note.innerHTML;
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
     });
   }
       let selectedAnnoteEl;
@@ -744,6 +876,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
             }
             div.style.top = top - 2 + "px";
             div.style.height = height + 4 + "px";
+            div.style.left = 0;
             let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
             if (gutterDiv === null) {
               gutterDiv = window.document.createElement("div");
@@ -769,6 +902,32 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         });
         selectedAnnoteEl = undefined;
       };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
       // Attach click handler to the DT
       const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
       for (const annoteDlNode of annoteDls) {
@@ -829,6 +988,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 });
 </script>
 </div> <!-- /content -->
+
 
 
 
