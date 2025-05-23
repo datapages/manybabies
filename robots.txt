@@ -1,1 +1,1 @@
-Sitemap: https://datapages.github.io/manybabies/sitemap.xml
+Sitemap: https://manybabies.github.io/manybabies-datapage/sitemap.xml
